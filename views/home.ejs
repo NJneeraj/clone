@@ -3,25 +3,32 @@
         <div class="row">
             <div class="col-md-6 offset-md-3 mt-5 col-xs-12">
                 <% for(let post of posts){ %>
-                    <div class="my-1 mw-8 h-auto" >
+                    <div class="my-1 mw-8 h-auto">
                         <div class="d-flex">
                             <div class="px-2  py-3"><i class="fa-sharp fa-solid fa-circle-user h2"></i></div>
-                            <div class="d-flex flex-column py-2"><p class="ms-1 mb-0  p-0" style="font-size:17px ;">
-                                <%=post.title%>
-                            </p>
-                            <span class="text-muted h6 p-0 ms-1" style="font-size: 13px;">Mumbai,India</span>
+                            <div class="d-flex flex-column py-2">
+                                <p class="ms-1 mb-0  p-0" style="font-size:17px ;">
+                                    <%=post.author%>
+                                </p>
+                                <span class="text-muted h6 p-0 ms-1" style="font-size: 13px;"><%post.location%> </span>
                             </div>
                             <div class="dropdown ms-auto me-2 py-3 ">
                                 <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-sharp fa-solid fa-ellipsis-vertical text-dark"></i>
                                 </a>
                                 <ul class="dropdown-menu">
-                                  <li><a class="dropdown-item" href="/posts/<%=post._id%>/edit">Edit</a></li>
-                                  <li><form action="/posts/<%=post._id%>?_method=DELETE" method="POST" class="dropdown-item ms-0"><button class="btn border-0 btn-body px-0">Delete</button></form></li>
-                                  <li><a class="dropdown-item text-danger" href="#">Unfollow</a></li>
-                                  <li><a class="dropdown-item text-danger" href="#">Report</a></li>
+                                    <% if(currentUser && post.user.equals(currentUser._id)){ %>
+                                        <li><a class="dropdown-item" href="/posts/<%=post._id%>/edit">Edit</a></li>
+                                        <li>
+                                            <form action="/posts/<%=post._id%>?_method=DELETE" method="POST"
+                                                class="dropdown-item ms-0"><button
+                                                    class="btn border-0 btn-body px-0">Delete</button></form>
+                                        </li>
+                                        <% } %>
+                                            <li><a class="dropdown-item text-danger" href="#">Unfollow</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#">Report</a></li>
                                 </ul>
-                              </div>
+                            </div>
                         </div>
                         <div>
                             <img class="my-img h-md-100" src="<%=post.url %> " alt="Card image cap" />
@@ -48,18 +55,24 @@
                                 <%= post.description %>
                             </p>
                             <% for(let comment of post.comments) {%>
-                                <form action="/posts/<%=post._id%>/comments/<%=comment._id%>?_method=DELETE" class="px-2 d-flex" method="POST">
-                                <p class="text-primary mb-0 w-80" style="font-size:15px;"><span class="text-dark"><%=comment.user%></span> <%=comment.content%></p>
-                                    <button class="bg-body border-0 text-danger w-10 ms-auto "><i class="fa-solid fa-trash"></i></button>
+                                <form action="/posts/<%=post._id%>/comments/<%=comment._id%>?_method=DELETE"
+                                    class="px-2 d-flex" method="POST">
+                                    <p class="text-primary mb-0 w-80" style="font-size:15px;"><span class="text-dark">
+                                            <%=comment.user%>
+                                        </span>
+                                        <%=comment.content%>
+                                    </p>
+                                    <button class="bg-body border-0 text-danger w-10 ms-auto "><i
+                                            class="fa-solid fa-trash"></i></button>
                                 </form>
-                                <% } %>  
+                                <% } %>
                         </div>
-                        
-                        <form action="/posts/<%=post._id%>/comments" id="myForm" method="POST" class="mt-2 mb-0">
+
+                        <form action="/posts/<%=post._id%>/comments" id="myForm" method="POST" class="mt-2 mb-0 validated-form" novalidate>
                             <div class="d-flex border-bottom">
-                                <textarea class="name border-0 border-top-1 ps-2 w-100 pb-1" id="mytextarea" cols="20" rows="1"
-                                placeholder="Add a comment" name="comment[content]"></textarea>
-                                <button  class="mt-auto ms-auto w-10 mx-2 border-0 bg-body text-primary pb-1">Post</a>
+                                <textarea class="name border-0 border-top-1 ps-2 w-100 pb-1" id="mytextarea" cols="20"
+                                    rows="1" placeholder="Add a comment" name="comment[content]"></textarea>
+                                <button class="mt-auto ms-auto w-10 mx-2 border-0 bg-body text-primary pb-1">Post</a>
                             </div>
                         </form>
                     </div>

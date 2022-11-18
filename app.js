@@ -2,17 +2,18 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const ejsMate = require('ejs-mate');
-const session=require('express-session');
-const passport=require('passport');
-const LocalStrategy=require('passport-local');
+const session = require('express-session');
+const passport = require('passport');
+const flash = require('connect-flash');
+const LocalStrategy = require('passport-local');
 const methodOverride = require('method-override');
-const ExpressError=require('./utils/expressError');
+const ExpressError = require('./utils/expressError');
 
 const Post = require('./models/post');
 const postRouer = require('./router/post');
-const commentRouter=require('./router/comment');
-const User=require('./models/user');
-const userRouter=require('./router/user');
+const commentRouter = require('./router/comment');
+const User = require('./models/user');
+const userRouter = require('./router/user');
 
 
 mongoose.connect("mongodb://localhost:27017/insta", {
@@ -35,12 +36,12 @@ const sessionConfig = {
   resave: false,
   saveUninitialized: true,
   cookie: {
-      httpOnly: true,
-      expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-      maxAge: 1000 * 60 * 60 * 24 * 7
+    httpOnly: true,
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7
   }
 }
-
+app.use(flash());
 app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -48,13 +49,17 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// app.use((req,res,next)=>{
-//   console.log(req.session);
-// })
+app.use((req, res, next) => {
+  console.log(req.session);
+  res.locals.currentUser = req.user;
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
+  next();
+})
 
 app.use('/posts', postRouer);
-app.use('/posts/:id/comments',commentRouter);
-app.use('/user',userRouter);
+app.use('/posts/:id/comments', commentRouter);
+app.use('/user', userRouter);
 
 app.all('*', (req, res, next) => {
   next(new ExpressError('Page Not Found', 404))
