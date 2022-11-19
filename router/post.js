@@ -5,8 +5,15 @@ const catchAsync = require('../utils/catchAsync');
 const { validatePost, isLoggedIn, isAuthor } = require('../middleware');
 const posts = require('../controllers/posts');
 
-router.get('/', catchAsync(async (req, res) => {
-    const posts = await Post.find({}).populate('comments');
+router.get('/',isLoggedIn, catchAsync(async (req, res) => {
+    const posts = await Post.find({}).populate({
+        path:'comments',
+        populate:{
+             path:'user'
+            }
+        })
+        .populate('user');
+    
     res.render('home', { posts });
 }))
 
@@ -22,9 +29,10 @@ router.post('/', isLoggedIn, validatePost, catchAsync(async (req, res) => {
     res.redirect(`/posts/${post._id}`);
 }))
 
-router.get('/:id', catchAsync(async (req, res) => {
+router.get('/:id',isLoggedIn, catchAsync(async (req, res) => {
     const { id } = req.params;
     const post = await Post.findById(id);
+    
     res.render('posts/show', { post });
 }))
 

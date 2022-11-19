@@ -10,9 +10,11 @@ router.post('/', validateComment, isLoggedIn, catchAsync(async (req, res) => {
   const { id } = req.params;
   const post = await Post.findById(id);
   const comment = new Comment(req.body.comment);
+  comment.user=req.user._id;
   post.comments.push(comment);
   await comment.save();
   await post.save();
+  console.log(comment);
   res.redirect(`/posts`);
 
 }))
