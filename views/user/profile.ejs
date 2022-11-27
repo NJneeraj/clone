@@ -1,0 +1,32 @@
+<%-layout('layout/boilerPlate') %>
+<div class="container">
+    <div class="row">
+      <div class="card m-auto mt-5" style="width: 23rem">
+        <div class="text-center">
+          </div>
+        <div class="card-body">
+          <div class="overflow-hidden">
+            <img class="my-img h-md-100" src="<%=user.profilePic%> " alt="Card image cap" style="width:60px;height:60px"/>
+        </div>
+          <form action="/user/profile" method="POST" novalidate class="validated-form">
+            <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="floatingInput"
+                  placeholder="name"
+                  name="image" required
+                />
+                <label for="floatingInput">Image</label>
+              </div>
+            
+            <button class="btn btn-primary mx-auto d-block my-4 w-100">
+              Upload Pic
+            </button>
+           </form>
+        </div>
+      </div>
+    </div>
+ 
+
+

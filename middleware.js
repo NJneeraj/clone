@@ -43,8 +43,8 @@ module.exports.isAuthor = async (req, res, next) => {
 }
 
 module.exports.isCommentAuthor = async (req, res, next) => {
-    const { id } = req.params;
-    const comment = await Comment.findById(id);
+    const { id,commentId } = req.params;
+    const comment = await Comment.findById(commentId);
     if (!comment.user.equals(req.user._id)) {
         req.flash('error', 'You are not authorized!');
         return res.redirect('/posts');
